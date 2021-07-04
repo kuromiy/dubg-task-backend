@@ -5,7 +5,7 @@ const router = Express.Router();
 
 router.use("/auth", AuthRouter);
 
-router.get("/status", (req: Express.Request, res: Express.Response) => {
+router.get("/test", (req: Express.Request, res: Express.Response) => {
     return res.json("This server is live.");
 });
 
