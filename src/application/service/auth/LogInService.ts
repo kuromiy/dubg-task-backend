@@ -13,8 +13,8 @@ class LogInService {
     public async execute(request: LogInRequest): Promise<LogInResponse> {
         this._logger.debug("LogInService#execute");
         const existUser = await this._userRepository.findByUserMail(request.userMail);
-        if (!existUser) throw new Error("");
-        if (existUser.equalsUserPassword(request.userPassword)) throw new Error("");
+        if (!existUser) throw new Error("ユーザーが存在しません。");
+        if (!existUser.equalsUserPassword(request.userPassword)) throw new Error("パスワードが異なります。");
 
         const token = await this._tokenUtils.sign(existUser.userId);
 

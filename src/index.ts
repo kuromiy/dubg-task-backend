@@ -5,6 +5,9 @@ import cors from "cors";
 
 const app = Express();
 
+app.use(Express.json());
+app.use(Express.urlencoded({extended: true}));
+
 app.use(cors({
     origin: 'http://localhost:3000',
     credentials: true,
@@ -14,6 +17,7 @@ app.use(cors({
 app.use(Router);
 
 app.use((err: Error, req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
+    console.log(err);
     return res.json("Server Error.");
 });
 

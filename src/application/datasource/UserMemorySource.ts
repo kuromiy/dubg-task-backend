@@ -8,7 +8,7 @@ class UserMemorySource implements UserRepository {
     constructor(private _logger: ApplicationLogger) {
         this._users = new Array<User>();
 
-        const initUser = User.recreate("TEST001", "Yamada Taro", "hoge@example.com", "test001");
+        const initUser = User.recreate("TEST001", "Yamada Taro", "test@example.com", "test");
         this._users.push(initUser);
     }
 
