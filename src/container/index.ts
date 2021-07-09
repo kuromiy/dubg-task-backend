@@ -11,6 +11,12 @@ import { ApplicationLogger } from "../utils/logger/ApplicationLogger";
 import { ApplicationLoggerByLog4js } from "../utils/logger/ApplicationLoggerByLog4js";
 import { LogInValidate } from "../utils/validation/auth/LogInValidate";
 import { LogInValidateByAjv } from "../utils/validation/auth/LogInValidateByAjv";
+import { TaskRegisterValidate } from "../utils/validation/task/TaskRegisterValidate";
+import { TaskRegisterValidateByAjv } from "../utils/validation/task/TaskRegisterValidateByAjv";
+import { TaskRepository } from "../domain/task/TaskRepository";
+import { TaskMemorySource } from "../application/datasource/TaskMemorySource";
+import { TaskRegisterService } from "../application/service/task/TaskRegisterService";
+import { TaskRegisterController } from "../presentation/controller/task/TaskRegisterController";
 
 const container = new Container();
 
@@ -48,12 +54,24 @@ container
             context.container.get("ApplicationLogger"),
             context.container.get("Ajv"));
     });
+container
+    .bind<TaskRegisterValidate>("TaskRegisterValidate")
+    .toDynamicValue((context: interfaces.Context) => {
+        return new TaskRegisterValidateByAjv(
+            context.container.get("ApplicationLogger"),
+            context.container.get("Ajv"));
+    });
 
 // Repository
 container
     .bind<UserRepository>("UserRepository")
     .toDynamicValue((context: interfaces.Context) => {
         return new UserMemorySource(context.container.get("ApplicationLogger"));
+    });
+container
+    .bind<TaskRepository>("TaskRepository")
+    .toDynamicValue((context: interfaces.Context) => {
+        return new TaskMemorySource(context.container.get("ApplicationLogger"));
     });
 
 // Service
@@ -65,6 +83,13 @@ container
             context.container.get("UserRepository"),
             context.container.get("TokenUtils"));
     });
+container
+    .bind<TaskRegisterService>("TaskRegisterService")
+    .toDynamicValue((context: interfaces.Context) => {
+        return new TaskRegisterService(
+            context.container.get("ApplicationLogger"),
+            context.container.get("TaskRepository"));
+    });
 
 // Controller
 container
@@ -74,6 +99,14 @@ container
             context.container.get("ApplicationLogger"),
             context.container.get("LogInValidate"),
             context.container.get("LogInService"));
+    });
+container
+    .bind<TaskRegisterController>("TaskRegisterController")
+    .toDynamicValue((context: interfaces.Context) => {
+        return new TaskRegisterController(
+            context.container.get("ApplicationLogger"),
+            context.container.get("TaskRegisterValidate"),
+            context.container.get("TaskRegisterService"));
     });
 
 export { container };
