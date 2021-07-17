@@ -17,6 +17,10 @@ import { TaskRepository } from "../domain/task/TaskRepository";
 import { TaskMemorySource } from "../application/datasource/TaskMemorySource";
 import { TaskRegisterService } from "../application/service/task/TaskRegisterService";
 import { TaskRegisterController } from "../presentation/controller/task/TaskRegisterController";
+import { TaskSearchService } from "../application/service/task/TaskSearchService";
+import { TaskSearchController } from "../presentation/controller/task/TaskSearchController";
+import { TaskSearchValidateByAjv } from "../utils/validation/task/TaskSearchValidateByAjv";
+import { TaskSearchValidate } from "../utils/validation/task/TaskSearchValidate";
 
 const container = new Container();
 
@@ -61,6 +65,13 @@ container
             context.container.get("ApplicationLogger"),
             context.container.get("Ajv"));
     });
+container
+    .bind<TaskSearchValidate>("TaskSearchValidate")
+    .toDynamicValue((context: interfaces.Context) => {
+        return new TaskSearchValidateByAjv(
+            context.container.get("ApplicationLogger"),
+            context.container.get("Ajv"));
+    });
 
 // Repository
 container
@@ -90,6 +101,13 @@ container
             context.container.get("ApplicationLogger"),
             context.container.get("TaskRepository"));
     });
+container
+    .bind<TaskSearchService>("TaskSearchService")
+    .toDynamicValue((context: interfaces.Context) => {
+        return new TaskSearchService(
+            context.container.get("ApplicationLogger"),
+            context.container.get("TaskRepository"));
+    });
 
 // Controller
 container
@@ -107,6 +125,14 @@ container
             context.container.get("ApplicationLogger"),
             context.container.get("TaskRegisterValidate"),
             context.container.get("TaskRegisterService"));
+    });
+container
+    .bind<TaskSearchController>("TaskSearchController")
+    .toDynamicValue((context: interfaces.Context) => {
+        return new TaskSearchController(
+            context.container.get("ApplicationLogger"),
+            context.container.get("TaskSearchValidate"),
+            context.container.get("TaskSearchService"));
     });
 
 export { container };
