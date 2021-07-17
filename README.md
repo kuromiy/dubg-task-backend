@@ -4,3 +4,7 @@
 ```cmd
 npm run dev
 ```
+
+SwaggerによるAPI仕様書
+
+http://localhost:8080/spec

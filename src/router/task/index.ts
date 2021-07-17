@@ -7,6 +7,37 @@ import { TaskSearchRequest } from "../../presentation/request/task/TaskSearchReq
 
 const router = Express.Router();
 
+/**
+ * @openapi
+ * /tasks:
+ *     post:
+ *         summary: タスク登録
+ *         description: 新規タスクを登録する。
+ *         requestBody:
+ *             description:
+ *             content:
+ *                 application/json:
+ *                     schema:
+ *                         type: object
+ *                         properties:
+ *                             taskName:
+ *                                 type: string
+ *                                 description: タスク名
+ *         responses:
+ *             200:
+ *                 description: test
+ *                 content:
+ *                     application/json:
+ *                         schema:
+ *                             type: object
+ *                             properties:
+ *                                 task:
+ *                                     type: object
+ *                                     properties:
+ *                                         taskId:
+ *                                             type: string
+ *                                             description: タスクID
+ */
 router.post("", async (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
     try {
         const request = new TaskRegisterRequest(req.body.taskName, req.body.userId);
