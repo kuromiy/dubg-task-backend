@@ -3,7 +3,6 @@ import { Container, interfaces } from "inversify";
 import { getLogger, Logger } from "log4js";
 import { UserMemorySource } from "../application/datasource/UserMemorySource";
 import { LogInService } from "../application/service/auth/LogInService";
-import { UserRepository } from "../domain/user/UserRepository";
 import { LogInController } from "../presentation/controller/auth/LogInController";
 import { TokenUtils } from "../utils/token/TokenUtils";
 import { TokenUtilsByJwt } from "../utils/token/TokenUtilsByJwt";
@@ -13,7 +12,6 @@ import { LogInValidate } from "../utils/validation/auth/LogInValidate";
 import { LogInValidateByAjv } from "../utils/validation/auth/LogInValidateByAjv";
 import { TaskRegisterValidate } from "../utils/validation/task/TaskRegisterValidate";
 import { TaskRegisterValidateByAjv } from "../utils/validation/task/TaskRegisterValidateByAjv";
-import { TaskRepository } from "../domain/task/TaskRepository";
 import { TaskMemorySource } from "../application/datasource/TaskMemorySource";
 import { TaskRegisterService } from "../application/service/task/TaskRegisterService";
 import { TaskRegisterController } from "../presentation/controller/task/TaskRegisterController";
@@ -21,6 +19,12 @@ import { TaskSearchService } from "../application/service/task/TaskSearchService
 import { TaskSearchController } from "../presentation/controller/task/TaskSearchController";
 import { TaskSearchValidateByAjv } from "../utils/validation/task/TaskSearchValidateByAjv";
 import { TaskSearchValidate } from "../utils/validation/task/TaskSearchValidate";
+import { TaskRegisterUseCase } from "../../usecase/task/register/TaskRegisterUseCase";
+import { TaskRegisterAction } from "../../usecase/task/register/TaskRegisterAction";
+import { TaskRepository } from "../../domain/task/TaskRepository";
+import { UserRepository } from "../../domain/user/UserRepository";
+import { TaskSearchUseCase } from "../../usecase/task/search/TaskSearchUseCase";
+import { TaskSearchAction } from "../../usecase/task/search/TaskSearchAction";
 
 const container = new Container();
 
@@ -85,6 +89,22 @@ container
         return new TaskMemorySource(context.container.get("ApplicationLogger"));
     });
 
+// UseCase
+container
+    .bind<TaskRegisterUseCase>("TaskRegisterUseCase")
+    .toDynamicValue((context: interfaces.Context) => {
+        return new TaskRegisterAction(
+            context.container.get("UserRepository"),
+            context.container.get("TaskRepository"));
+    });
+container
+    .bind<TaskSearchUseCase>("TaskSearchUseCase")
+    .toDynamicValue((context: interfaces.Context) => {
+        return new TaskSearchAction(
+            context.container.get("UserRepository"),
+            context.container.get("TaskRepository"));
+    });
+
 // Service
 container
     .bind<LogInService>("LogInService")
@@ -99,14 +119,14 @@ container
     .toDynamicValue((context: interfaces.Context) => {
         return new TaskRegisterService(
             context.container.get("ApplicationLogger"),
-            context.container.get("TaskRepository"));
+            context.container.get("TaskRegisterUseCase"));
     });
 container
     .bind<TaskSearchService>("TaskSearchService")
     .toDynamicValue((context: interfaces.Context) => {
         return new TaskSearchService(
             context.container.get("ApplicationLogger"),
-            context.container.get("TaskRepository"));
+            context.container.get("TaskSearchUseCase"));
     });
 
 // Controller

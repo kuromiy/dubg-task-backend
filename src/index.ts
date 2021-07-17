@@ -1,5 +1,5 @@
 import Express from "express";
-import Router from "./router";
+import Router from "./web/router";
 import "reflect-metadata";
 import cors from "cors";
 import swaggerJSDoc, { Options } from "swagger-jsdoc";
@@ -14,7 +14,7 @@ const options: Options = {
             description: "dubg-task-backend API仕様書",
         },
     },
-    apis: ["./src/router/**/*.ts"],
+    apis: ["./src/web/router/**/*.ts"],
 }
 
 const app = Express();

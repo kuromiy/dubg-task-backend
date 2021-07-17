@@ -1,4 +1,4 @@
-import { UserRepository } from "../../../domain/user/UserRepository";
+import { UserRepository } from "../../../../domain/user/UserRepository";
 import { LogInRequest } from "../../../presentation/request/auth/LogInRequest";
 import { LogInResponse } from "../../../presentation/response/auth/LogInResponse";
 import { TokenUtils } from "../../../utils/token/TokenUtils";

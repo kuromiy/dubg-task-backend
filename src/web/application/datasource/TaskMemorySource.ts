@@ -1,5 +1,5 @@
-import { Task } from "../../domain/task/Task";
-import { TaskRepository } from "../../domain/task/TaskRepository";
+import { Task } from "../../../domain/task/Task";
+import { TaskRepository } from "../../../domain/task/TaskRepository";
 import { ApplicationLogger } from "../../utils/logger/ApplicationLogger";
 
 class TaskMemorySource implements TaskRepository {

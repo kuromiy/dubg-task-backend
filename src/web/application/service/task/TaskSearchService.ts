@@ -1,26 +1,24 @@
-import { Task } from "../../../domain/task/Task";
-import { TaskRepository } from "../../../domain/task/TaskRepository";
+import { Task } from "../../../../domain/task/Task";
 import { TaskSearchRequest } from "../../../presentation/request/task/TaskSearchRequest";
 import { TaskResource } from "../../../presentation/resource/TaskResource";
 import { TaskStatusResource } from "../../../presentation/resource/TaskStatusResource";
 import { TaskSearchResponse } from "../../../presentation/response/task/TaskSearchResponse";
+import { TaskSearchInput } from "../../../../usecase/task/search/TaskSearchInput";
+import { TaskSearchUseCase } from "../../../../usecase/task/search/TaskSearchUseCase";
 import { ApplicationLogger } from "../../../utils/logger/ApplicationLogger";
 
 class TaskSearchService {
     constructor(
         private _logger: ApplicationLogger,
-        private _taskRepository: TaskRepository) {}
+        private _taskSearchUseCase: TaskSearchUseCase) {}
 
     public async execute(request: TaskSearchRequest): Promise<TaskSearchResponse> {
         this._logger.debug("TaskSearchService#execute");
-        const count = await this._taskRepository.count(request.taskName, request.taskStatusId, request.userId);
-        console.log(count);
-        if (count === 0) return new TaskSearchResponse(count, new Array<TaskResource>());
+        const input = new TaskSearchInput(request.taskName, request.taskStatusId, request.userId, request.limit, request.offset);
+        const output = await this._taskSearchUseCase.handle(input);
 
-        const tasks = await this._taskRepository.search(request.taskName, request.taskStatusId, request.userId, request.limit, request.offset);
-
-        const resources = this._convert(tasks);
-        const response = new TaskSearchResponse(count, resources);
+        const resources = this._convert(output.tasks);
+        const response = new TaskSearchResponse(output.count, resources);
         return response;
     }
 

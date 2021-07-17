@@ -1,27 +1,23 @@
-import { Task } from "../../../domain/task/Task";
-import { TaskRepository } from "../../../domain/task/TaskRepository";
+import { Task } from "../../../../domain/task/Task";
 import { TaskRegisterRequest } from "../../../presentation/request/task/TaskRegisterRequest";
 import { TaskResource } from "../../../presentation/resource/TaskResource";
 import { TaskStatusResource } from "../../../presentation/resource/TaskStatusResource";
 import { TaskRegisterResponse } from "../../../presentation/response/task/TaskRegisterResponse";
+import { TaskRegisterInput } from "../../../../usecase/task/register/TaskRegisterInput";
+import { TaskRegisterUseCase } from "../../../../usecase/task/register/TaskRegisterUseCase";
 import { ApplicationLogger } from "../../../utils/logger/ApplicationLogger";
 
 class TaskRegisterService {
     constructor(
         private _logger: ApplicationLogger,
-        private _taskRepository: TaskRepository) {}
+        private _taskRegisterUseCase: TaskRegisterUseCase) {}
 
     public async execute(request: TaskRegisterRequest): Promise<TaskRegisterResponse> {
         this._logger.debug("TaskRegisterService#execute");
-        const existTask = await this._taskRepository.findByTaskName(request.taskName, request.userId);
-        if (existTask) throw new Error("タスク名が存在します。");
+        const input = new TaskRegisterInput(request.taskName, request.userId);
+        const output = await this._taskRegisterUseCase.handle(input);
 
-        const taskId = await this._taskRepository.generateTaskId();
-        const task = Task.create(taskId, request.taskName, request.userId);
-        const result = await this._taskRepository.register(task);
-        if (result === 0) throw new Error("タスク登録に失敗しました。");
-
-        const resource = this._convert(task);
+        const resource = this._convert(output.task);
         const response = new TaskRegisterResponse(resource);
         return response;
     }

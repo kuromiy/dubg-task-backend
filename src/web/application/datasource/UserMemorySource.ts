@@ -1,5 +1,5 @@
-import { User } from "../../domain/user/User";
-import { UserRepository } from "../../domain/user/UserRepository";
+import { User } from "../../../domain/user/User";
+import { UserRepository } from "../../../domain/user/UserRepository";
 import { ApplicationLogger } from "../../utils/logger/ApplicationLogger";
 
 class UserMemorySource implements UserRepository {
@@ -10,6 +10,12 @@ class UserMemorySource implements UserRepository {
 
         const initUser = User.recreate("TEST001", "Yamada Taro", "test@example.com", "test");
         this._users.push(initUser);
+    }
+
+    public async findByUserId(userId: string): Promise<User | null> {
+        this._logger.debug("UserMemorySource#findByUserId");
+        const user = this._users.find(value => value.userId === userId);
+        return user ? user : null;
     }
 
     public async findByUserMail(userMail: string): Promise<User | null> {
