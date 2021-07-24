@@ -1,7 +1,6 @@
 import Ajv from "ajv";
 import { Container, interfaces } from "inversify";
 import { getLogger, Logger } from "log4js";
-import { UserMemorySource } from "../application/datasource/UserMemorySource";
 import { LogInService } from "../application/service/auth/LogInService";
 import { LogInController } from "../presentation/controller/auth/LogInController";
 import { TokenUtils } from "../utils/token/TokenUtils";
@@ -12,7 +11,6 @@ import { LogInValidate } from "../utils/validation/auth/LogInValidate";
 import { LogInValidateByAjv } from "../utils/validation/auth/LogInValidateByAjv";
 import { TaskRegisterValidate } from "../utils/validation/task/TaskRegisterValidate";
 import { TaskRegisterValidateByAjv } from "../utils/validation/task/TaskRegisterValidateByAjv";
-import { TaskMemorySource } from "../application/datasource/TaskMemorySource";
 import { TaskRegisterService } from "../application/service/task/TaskRegisterService";
 import { TaskRegisterController } from "../presentation/controller/task/TaskRegisterController";
 import { TaskSearchService } from "../application/service/task/TaskSearchService";
@@ -25,6 +23,9 @@ import { TaskRepository } from "../../domain/task/TaskRepository";
 import { UserRepository } from "../../domain/user/UserRepository";
 import { TaskSearchUseCase } from "../../usecase/task/search/TaskSearchUseCase";
 import { TaskSearchAction } from "../../usecase/task/search/TaskSearchAction";
+import { PrismaClient } from "@prisma/client";
+import { UserDataSource } from "../application/datasource/UserDataSource";
+import { TaskDataSource } from "../application/datasource/TaskDataSource";
 
 const container = new Container();
 
@@ -40,6 +41,11 @@ container
         const logger = getLogger();
         logger.level = "debug";
         return logger;
+    });
+container
+    .bind<PrismaClient>("PrismaClient")
+    .toDynamicValue((context: interfaces.Context) => {
+        return new PrismaClient();
     });
 
 // Utils
@@ -81,12 +87,16 @@ container
 container
     .bind<UserRepository>("UserRepository")
     .toDynamicValue((context: interfaces.Context) => {
-        return new UserMemorySource(context.container.get("ApplicationLogger"));
+        return new UserDataSource(
+            context.container.get("PrismaClient"),
+            context.container.get("ApplicationLogger"));
     });
 container
     .bind<TaskRepository>("TaskRepository")
     .toDynamicValue((context: interfaces.Context) => {
-        return new TaskMemorySource(context.container.get("ApplicationLogger"));
+        return new TaskDataSource(
+            context.container.get("PrismaClient"),
+            context.container.get("ApplicationLogger"));
     });
 
 // UseCase

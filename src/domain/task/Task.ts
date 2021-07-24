@@ -23,6 +23,10 @@ class Task {
         return new Task(taskId, taskName, taskStatus, userId, now, now);
     }
 
+    public static recreate(taskId: string, taskName: string, taskStatus: TaskStatus, userId: string, createdAt: Date, updatedAt: Date): Task {
+        return new Task(taskId, taskName, taskStatus, userId, createdAt, updatedAt);
+    }
+
     public get taskId(): string {
         return this._taskId;
     }

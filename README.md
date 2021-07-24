@@ -8,3 +8,13 @@ npm run dev
 SwaggerによるAPI仕様書
 
 http://localhost:8080/spec
+
+prismaによるDB操作
+```cmd
+npx prisma migrate dev --name <マイグレーション名>
+```
+
+prismaによるデータ投入
+```cmd
+npx prisma db seed --preview-feature
+```
