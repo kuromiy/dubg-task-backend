@@ -39,24 +39,46 @@ class TaskDataSource implements TaskRepository {
     }
 
     public async count(taskName: string, taskStatusId: string, userId: string): Promise<number> {
-        const count = await this._prisma.tasks.count({
-            where: {
+        this._logger.info("TaskDataSource#count");
+        let whereClause = {};
+        if (taskName === "") {
+            whereClause = {
+                task_status: taskStatusId,
+                user_id: userId,
+            };
+        } else {
+            whereClause = {
                 task_name: taskName,
                 task_status: taskStatusId,
                 user_id: userId,
-            },
+            };
+        }
+
+        console.log(whereClause);
+        const count = await this._prisma.tasks.count({
+            where: whereClause,
         });
 
         return count;
     }
 
     public async search(taskName: string, taskStatusId: string, userId: string, limit: number, offset: number): Promise<Task[]> {
-        const taskSources = await this._prisma.tasks.findMany({
-            where: {
+        let whereClause = {};
+        if (taskName === "") {
+            whereClause = {
+                task_status: taskStatusId,
+                user_id: userId,
+            };
+        } else {
+            whereClause = {
                 task_name: taskName,
                 task_status: taskStatusId,
                 user_id: userId,
-            },
+            };
+        }
+
+        const taskSources = await this._prisma.tasks.findMany({
+            where: whereClause,
             skip: offset * limit,
             take: limit,    
         });
