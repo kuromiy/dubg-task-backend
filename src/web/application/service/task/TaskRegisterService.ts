@@ -6,11 +6,14 @@ import { TaskRegisterResponse } from "../../../presentation/response/task/TaskRe
 import { TaskRegisterInput } from "../../../../usecase/task/register/TaskRegisterInput";
 import { TaskRegisterUseCase } from "../../../../usecase/task/register/TaskRegisterUseCase";
 import { ApplicationLogger } from "../../../utils/logger/ApplicationLogger";
+import { inject, injectable } from "inversify";
+import { TYPES } from "../../../container/types";
 
+@injectable()
 class TaskRegisterService {
     constructor(
-        private _logger: ApplicationLogger,
-        private _taskRegisterUseCase: TaskRegisterUseCase) {}
+        @inject(TYPES.ApplicationLogger) private _logger: ApplicationLogger,
+        @inject(TYPES.TaskRegisterUseCase) private _taskRegisterUseCase: TaskRegisterUseCase) {}
 
     public async execute(request: TaskRegisterRequest): Promise<TaskRegisterResponse> {
         this._logger.debug("TaskRegisterService#execute");

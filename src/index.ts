@@ -1,6 +1,6 @@
+import "reflect-metadata";
 import Express from "express";
 import Router from "./web/router";
-import "reflect-metadata";
 import cors from "cors";
 import swaggerJSDoc, { Options } from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";

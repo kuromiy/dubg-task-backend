@@ -6,11 +6,14 @@ import { TaskSearchResponse } from "../../../presentation/response/task/TaskSear
 import { TaskSearchInput } from "../../../../usecase/task/search/TaskSearchInput";
 import { TaskSearchUseCase } from "../../../../usecase/task/search/TaskSearchUseCase";
 import { ApplicationLogger } from "../../../utils/logger/ApplicationLogger";
+import { inject, injectable } from "inversify";
+import { TYPES } from "../../../container/types";
 
+@injectable()
 class TaskSearchService {
     constructor(
-        private _logger: ApplicationLogger,
-        private _taskSearchUseCase: TaskSearchUseCase) {}
+        @inject(TYPES.ApplicationLogger) private _logger: ApplicationLogger,
+        @inject(TYPES.TaskSearchUseCase) private _taskSearchUseCase: TaskSearchUseCase) {}
 
     public async execute(request: TaskSearchRequest): Promise<TaskSearchResponse> {
         this._logger.debug("TaskSearchService#execute");

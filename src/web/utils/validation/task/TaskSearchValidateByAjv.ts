@@ -2,6 +2,8 @@ import Ajv, { JSONSchemaType } from "ajv";
 import { TaskSearchRequest } from "../../../presentation/request/task/TaskSearchRequest";
 import { ApplicationLogger } from "../../logger/ApplicationLogger";
 import { TaskSearchValidate } from "./TaskSearchValidate";
+import { injectable, inject } from "inversify";
+import { TYPES } from "../../../container/types";
 
 const TaskSearchValidateSchema: JSONSchemaType<TaskSearchRequest> = {
     type: "object",
@@ -28,10 +30,11 @@ const TaskSearchValidateSchema: JSONSchemaType<TaskSearchRequest> = {
     additionalProperties: false
 };
 
+@injectable()
 class TaskSearchValidateByAjv implements TaskSearchValidate {
     constructor(
-        private _logger: ApplicationLogger,
-        private _ajv: Ajv) {}
+        @inject(TYPES.ApplicationLogger) private _logger: ApplicationLogger,
+        @inject(TYPES.Ajv) private _ajv: Ajv) {}
 
     public validate(request: TaskSearchRequest): void {
         this._logger.debug("TaskSearchValidateByAjv#validate");

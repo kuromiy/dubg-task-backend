@@ -2,11 +2,14 @@ import { User } from "../../../domain/user/User";
 import { UserRepository } from "../../../domain/user/UserRepository";
 import { PrismaClient } from "@prisma/client";
 import { ApplicationLogger } from "../../utils/logger/ApplicationLogger";
+import { injectable, inject } from "inversify";
+import { TYPES } from "../../container/types";
 
+@injectable()
 class UserDataSource implements UserRepository {
     constructor(
-        private _prisma: PrismaClient,
-        private _logger: ApplicationLogger) {}
+        @inject(TYPES.PrismaClient) private _prisma: PrismaClient,
+        @inject(TYPES.ApplicationLogger) private _logger: ApplicationLogger) {}
 
     public async findByUserId(userId: string): Promise<User | null> {
         const foundUser = await this._prisma.users.findFirst({

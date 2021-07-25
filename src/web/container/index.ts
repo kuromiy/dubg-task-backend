@@ -26,12 +26,14 @@ import { TaskSearchAction } from "../../usecase/task/search/TaskSearchAction";
 import { PrismaClient } from "@prisma/client";
 import { UserDataSource } from "../application/datasource/UserDataSource";
 import { TaskDataSource } from "../application/datasource/TaskDataSource";
+import { TYPES } from "./types";
 
 const container = new Container();
 
+
 // Vendor
 container
-    .bind<Ajv>("Ajv")
+    .bind<Ajv>(TYPES.Ajv)
     .toDynamicValue((context: interfaces.Context) => {
         return new Ajv();
     });
@@ -43,14 +45,14 @@ container
         return logger;
     });
 container
-    .bind<PrismaClient>("PrismaClient")
+    .bind<PrismaClient>(TYPES.PrismaClient)
     .toDynamicValue((context: interfaces.Context) => {
         return new PrismaClient({log: ["query"]});
     });
 
 // Utils
 container
-    .bind<ApplicationLogger>("ApplicationLogger")
+    .bind<ApplicationLogger>(TYPES.ApplicationLogger)
     .toDynamicValue((context: interfaces.Context) => {
         return new ApplicationLoggerByLog4js(context.container.get("Logger"));
     });
@@ -65,54 +67,38 @@ container
     .bind<LogInValidate>("LogInValidate")
     .toDynamicValue((context: interfaces.Context) => {
         return new LogInValidateByAjv(
-            context.container.get("ApplicationLogger"),
-            context.container.get("Ajv"));
+            context.container.get<ApplicationLogger>(TYPES.ApplicationLogger),
+            context.container.get<Ajv>(TYPES.Ajv));
     });
 container
-    .bind<TaskRegisterValidate>("TaskRegisterValidate")
-    .toDynamicValue((context: interfaces.Context) => {
-        return new TaskRegisterValidateByAjv(
-            context.container.get("ApplicationLogger"),
-            context.container.get("Ajv"));
-    });
+    .bind<TaskRegisterValidate>(TYPES.TaskRegisterValidate)
+    .to(TaskRegisterValidateByAjv);
 container
-    .bind<TaskSearchValidate>("TaskSearchValidate")
-    .toDynamicValue((context: interfaces.Context) => {
-        return new TaskSearchValidateByAjv(
-            context.container.get("ApplicationLogger"),
-            context.container.get("Ajv"));
-    });
+    .bind<TaskSearchValidate>(TYPES.TaskSearchValidate)
+    .to(TaskSearchValidateByAjv);
 
 // Repository
 container
-    .bind<UserRepository>("UserRepository")
-    .toDynamicValue((context: interfaces.Context) => {
-        return new UserDataSource(
-            context.container.get("PrismaClient"),
-            context.container.get("ApplicationLogger"));
-    });
+    .bind<UserRepository>(TYPES.UserRepository)
+    .to(UserDataSource);
 container
-    .bind<TaskRepository>("TaskRepository")
-    .toDynamicValue((context: interfaces.Context) => {
-        return new TaskDataSource(
-            context.container.get("PrismaClient"),
-            context.container.get("ApplicationLogger"));
-    });
+    .bind<TaskRepository>(TYPES.TaskRepository)
+    .to(TaskDataSource);
 
 // UseCase
 container
-    .bind<TaskRegisterUseCase>("TaskRegisterUseCase")
+    .bind<TaskRegisterUseCase>(TYPES.TaskRegisterUseCase)
     .toDynamicValue((context: interfaces.Context) => {
         return new TaskRegisterAction(
-            context.container.get("UserRepository"),
-            context.container.get("TaskRepository"));
+            context.container.get<UserRepository>(TYPES.UserRepository),
+            context.container.get<TaskRepository>(TYPES.TaskRepository));
     });
 container
-    .bind<TaskSearchUseCase>("TaskSearchUseCase")
+    .bind<TaskSearchUseCase>(TYPES.TaskSearchUseCase)
     .toDynamicValue((context: interfaces.Context) => {
         return new TaskSearchAction(
-            context.container.get("UserRepository"),
-            context.container.get("TaskRepository"));
+            context.container.get<UserRepository>(TYPES.UserRepository),
+            context.container.get<TaskRepository>(TYPES.TaskRepository));
     });
 
 // Service
@@ -120,49 +106,31 @@ container
     .bind<LogInService>("LogInService")
     .toDynamicValue((context: interfaces.Context) => {
         return new LogInService(
-            context.container.get("ApplicationLogger"),
-            context.container.get("UserRepository"),
-            context.container.get("TokenUtils"));
+            context.container.get<ApplicationLogger>(TYPES.ApplicationLogger),
+            context.container.get<UserRepository>(TYPES.UserRepository),
+            context.container.get<TokenUtils>("TokenUtils"));
     });
 container
-    .bind<TaskRegisterService>("TaskRegisterService")
-    .toDynamicValue((context: interfaces.Context) => {
-        return new TaskRegisterService(
-            context.container.get("ApplicationLogger"),
-            context.container.get("TaskRegisterUseCase"));
-    });
+    .bind<TaskRegisterService>(TYPES.TaskRegisterService)
+    .to(TaskRegisterService);
 container
-    .bind<TaskSearchService>("TaskSearchService")
-    .toDynamicValue((context: interfaces.Context) => {
-        return new TaskSearchService(
-            context.container.get("ApplicationLogger"),
-            context.container.get("TaskSearchUseCase"));
-    });
+    .bind<TaskSearchService>(TYPES.TaskSearchService)
+    .to(TaskSearchService);
 
 // Controller
 container
     .bind<LogInController>("LogInController")
     .toDynamicValue((context: interfaces.Context) => {
         return new LogInController(
-            context.container.get("ApplicationLogger"),
-            context.container.get("LogInValidate"),
-            context.container.get("LogInService"));
+            context.container.get<ApplicationLogger>(TYPES.ApplicationLogger),
+            context.container.get<LogInValidate>("LogInValidate"),
+            context.container.get<LogInService>("LogInService"));
     });
 container
-    .bind<TaskRegisterController>("TaskRegisterController")
-    .toDynamicValue((context: interfaces.Context) => {
-        return new TaskRegisterController(
-            context.container.get("ApplicationLogger"),
-            context.container.get("TaskRegisterValidate"),
-            context.container.get("TaskRegisterService"));
-    });
+    .bind<TaskRegisterController>(TYPES.TaskRegisterController)
+    .to(TaskRegisterController);
 container
-    .bind<TaskSearchController>("TaskSearchController")
-    .toDynamicValue((context: interfaces.Context) => {
-        return new TaskSearchController(
-            context.container.get("ApplicationLogger"),
-            context.container.get("TaskSearchValidate"),
-            context.container.get("TaskSearchService"));
-    });
+    .bind<TaskSearchController>(TYPES.TaskSearchController)
+    .to(TaskSearchController);
 
 export { container };

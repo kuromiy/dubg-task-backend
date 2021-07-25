@@ -1,6 +1,9 @@
+import "reflect-metadata";
+import { injectable } from "inversify";
 import { Logger } from "log4js";
 import { ApplicationLogger } from "./ApplicationLogger";
 
+@injectable()
 class ApplicationLoggerByLog4js implements ApplicationLogger {
     constructor(private _logger: Logger) {}
 

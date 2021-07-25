@@ -1,14 +1,17 @@
+import { inject, injectable } from "inversify";
 import { TaskRegisterService } from "../../../application/service/task/TaskRegisterService";
+import { TYPES } from "../../../container/types";
 import { ApplicationLogger } from "../../../utils/logger/ApplicationLogger";
 import { TaskRegisterValidate } from "../../../utils/validation/task/TaskRegisterValidate";
 import { TaskRegisterRequest } from "../../request/task/TaskRegisterRequest";
 import { TaskRegisterResponse } from "../../response/task/TaskRegisterResponse";
 
+@injectable()
 class TaskRegisterController {
     constructor(
-        private _logger: ApplicationLogger,
-        private _validate: TaskRegisterValidate,
-        private _service: TaskRegisterService) {}
+        @inject(TYPES.ApplicationLogger) private _logger: ApplicationLogger,
+        @inject(TYPES.TaskRegisterValidate) private _validate: TaskRegisterValidate,
+        @inject(TYPES.TaskRegisterService) private _service: TaskRegisterService) {}
 
     public async api(request: TaskRegisterRequest): Promise<TaskRegisterResponse> {
         this._logger.debug("TaskRegisterController#api");

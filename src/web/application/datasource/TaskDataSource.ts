@@ -4,11 +4,14 @@ import { TaskRepository } from "../../../domain/task/TaskRepository";
 import { TaskStatus } from "../../../domain/task/TaskStatus";
 import { v4 } from "uuid";
 import { ApplicationLogger } from "../../utils/logger/ApplicationLogger";
+import { injectable, inject } from "inversify";
+import { TYPES } from "../../container/types";
 
+@injectable()
 class TaskDataSource implements TaskRepository {
     constructor(
-        private _prisma: PrismaClient,
-        private _logger: ApplicationLogger) {}
+        @inject(TYPES.PrismaClient) private _prisma: PrismaClient,
+        @inject(TYPES.ApplicationLogger) private _logger: ApplicationLogger) {}
 
     public async register(task: Task): Promise<number> {
         const registeredUser = await this._prisma.tasks.create({
