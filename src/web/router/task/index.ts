@@ -10,33 +10,28 @@ const router = Express.Router();
 /**
  * @openapi
  * /tasks:
- *     post:
- *         summary: タスク登録
- *         description: 新規タスクを登録する。
- *         requestBody:
- *             description:
- *             content:
- *                 application/json:
- *                     schema:
- *                         type: object
- *                         properties:
- *                             taskName:
- *                                 type: string
- *                                 description: タスク名
- *         responses:
- *             200:
- *                 description: test
- *                 content:
- *                     application/json:
- *                         schema:
- *                             type: object
- *                             properties:
- *                                 task:
- *                                     type: object
- *                                     properties:
- *                                         taskId:
- *                                             type: string
- *                                             description: タスクID
+ *   post:
+ *     summary: タスク登録
+ *     description: 新規タスクを登録する。
+ *     tags:
+ *       - tasks
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       description:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             $ref: "#/components/schemas/TaskRegisterRequest"
+ *     responses:
+ *       200:
+ *         description: 新規タスク登録成功レスポンス
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               $ref: "#/components/schemas/TaskRegisterResponse"
  */
 router.post("", async (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
     try {
@@ -49,6 +44,28 @@ router.post("", async (req: Express.Request, res: Express.Response, next: Expres
     }
 });
 
+/**
+ * @openapi
+ * /tasks/search:
+ *   get:
+ *     summary: タスク検索
+ *     description: 指定した条件でタスクを検索する。
+ *     tags:
+ *       - tasks
+ *     parameters:
+ *       - $ref: "#/components/parameters/task_name"
+ *       - $ref: "#/components/parameters/task_status_id"
+ *       - $ref: "#/components/parameters/limit"
+ *       - $ref: "#/components/parameters/offset"
+ *     responses:
+ *       200:
+ *         description: 
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               $ref: "#/components/schemas/TaskSearchResponse"
+ */
 router.get("/search", async (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
     try {
         console.log(req.query);

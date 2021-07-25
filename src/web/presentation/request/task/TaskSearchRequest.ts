@@ -1,3 +1,32 @@
+/**
+ * @openapi
+ * components:
+ *   parameters:
+ *     task_name:
+ *       in: query
+ *       name: task_name
+ *       description: タスク名
+ *       schema:
+ *         type: string
+ *     task_status_id:
+ *       in: query
+ *       name: task_status_id
+ *       description: タスク状態ID
+ *       schema:
+ *         type: string
+ *     limit:
+ *       in: query
+ *       name: limit
+ *       description: リミット
+ *       schema:
+ *         type: integer
+ *     offset:
+ *       in: query
+ *       name: offset
+ *       description: オフセット
+ *       schema:
+ *         type: integer
+ */
 class TaskSearchRequest {
     constructor(
         private _taskName: string,

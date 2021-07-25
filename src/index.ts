@@ -14,7 +14,10 @@ const options: Options = {
             description: "dubg-task-backend API仕様書",
         },
     },
-    apis: ["./src/web/router/**/*.ts"],
+    apis: [
+        "./src/web/router/**/*.ts",
+        "./src/web/presentation/**/*.ts"
+    ],
 }
 
 const app = Express();
@@ -42,4 +45,9 @@ app.use((err: Error, req: Express.Request, res: Express.Response, next: Express.
     return res.json("Server Error.");
 });
 
-app.listen(8080, () => console.log("START"));
+app.listen(8080, () => {
+    console.log("<================ START ================>");
+    console.log("開発用URL   : http://localhost:8080");
+    console.log("API仕様書URL: http://localhost:8080/spec");
+    console.log("<=======================================>");
+});

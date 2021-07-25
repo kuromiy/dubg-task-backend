@@ -12,4 +12,18 @@ router.get("/test", (req: Express.Request, res: Express.Response) => {
     return res.json({message: "This server is live."});
 });
 
+/**
+ * @openapi
+ * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ * tags:
+ *   - name: tasks
+ *     description: Access to Tasks
+ * security:
+ *   - bearerAuth: []
+ */
 export default router;

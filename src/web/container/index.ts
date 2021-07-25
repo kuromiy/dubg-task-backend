@@ -45,7 +45,7 @@ container
 container
     .bind<PrismaClient>("PrismaClient")
     .toDynamicValue((context: interfaces.Context) => {
-        return new PrismaClient();
+        return new PrismaClient({log: ["query"]});
     });
 
 // Utils
