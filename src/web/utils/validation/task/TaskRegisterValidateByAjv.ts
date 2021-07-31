@@ -5,21 +5,21 @@ import Ajv, { JSONSchemaType } from "ajv";
 import { injectable, inject } from "inversify";
 import { TYPES } from "../../../container/types";
 
-const TaskRegisterValidateSchema: JSONSchemaType<TaskRegisterRequest> = {
-    type: "object",
-    properties: {
-        taskName: {
-            type: "string",
-        },
-        userId: {
-            type: "string",
-        }
-    },
-    required: [
-        "taskName", "userId"
-    ],
-    additionalProperties: false
-};
+// const TaskRegisterValidateSchema: JSONSchemaType<TaskRegisterRequest> = {
+//     type: "object",
+//     properties: {
+//         taskName: {
+//             type: "string",
+//         },
+//         userId: {
+//             type: "string",
+//         }
+//     },
+//     required: [
+//         "taskName", "userId"
+//     ],
+//     additionalProperties: false
+// };
 
 @injectable()
 class TaskRegisterValidateByAjv implements TaskRegisterValidate {
@@ -28,10 +28,10 @@ class TaskRegisterValidateByAjv implements TaskRegisterValidate {
         @inject(TYPES.Ajv) private _ajv: Ajv) {}
 
     public validate(request: TaskRegisterRequest): void {
-        this._logger.debug("TaskRegisterValidateByAjv#validate");
-        const validated = this._ajv.compile(TaskRegisterValidateSchema);
-        const valid = validated(request);
-        if (!valid) console.log(validated.errors);
+        // this._logger.debug("TaskRegisterValidateByAjv#validate");
+        // const validated = this._ajv.compile(TaskRegisterValidateSchema);
+        // const valid = validated(request);
+        // if (!valid) console.log(validated.errors);
     }
 }
 

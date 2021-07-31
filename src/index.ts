@@ -41,7 +41,7 @@ app.use("/spec/api.json", (req: Express.Request, res: Express.Response, next: Ex
 app.use("/spec", swaggerUi.serve, swaggerUi.setup(swaggerJSDoc(options)));
 
 app.use((err: Error, req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
-    console.log(err);
+    console.log(err.message);
     return res.json("Server Error.");
 });
 

@@ -9,7 +9,7 @@ import { TaskStatusResource } from "./TaskStatusResource";
  *       description: タスク
  *       properties:
  *         task_id:
- *           type: string
+ *           type: integer
  *           description: タスクID
  *           example: 1
  *         task_name:
@@ -34,7 +34,7 @@ import { TaskStatusResource } from "./TaskStatusResource";
  */
 class TaskResource {
     constructor(
-        public taskId: string,
+        public taskId: number,
         public taskName: string,
         public taskStatus: TaskStatusResource,
         public userId: string,

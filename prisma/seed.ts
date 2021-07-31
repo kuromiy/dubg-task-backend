@@ -20,7 +20,6 @@ const main = async () => {
 
     await prisma.tasks.create({
         data: {
-            task_id: "1",
             task_name: "test",
             task_status: "1",
             user_id: "1",

@@ -22,9 +22,10 @@ model users {
 }
 
 model tasks {
-    task_id     String @id
+    task_id     Int   @id @default(autoincrement())
     task_name   String
     task_status String
+    parent_task_id   Int?
     user        users @relation(fields: [user_id], references: [user_id])
     user_id     String
     created_at  DateTime @default(now())

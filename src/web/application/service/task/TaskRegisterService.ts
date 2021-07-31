@@ -17,7 +17,7 @@ class TaskRegisterService {
 
     public async execute(request: TaskRegisterRequest): Promise<TaskRegisterResponse> {
         this._logger.debug("TaskRegisterService#execute");
-        const input = new TaskRegisterInput(request.taskName, request.userId);
+        const input = new TaskRegisterInput(request.taskName, request.childTaskNames, request.userId);
         const output = await this._taskRegisterUseCase.handle(input);
 
         const resource = this._convert(output.task);
@@ -26,6 +26,8 @@ class TaskRegisterService {
     }
 
     private _convert(task: Task): TaskResource {
+        console.log(task);
+        console.log("タスクリソース作成");
         const taskStatusResource = new TaskStatusResource(task.taskStatus.taskStatusId, task.taskStatus.taskStatusName);
         const taskResource = new TaskResource(task.taskId, task.taskName, taskStatusResource, task.userId, task.createdAt, task.updatedAt);
 

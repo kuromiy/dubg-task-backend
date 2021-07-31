@@ -36,7 +36,7 @@ const router = Express.Router();
  */
 router.post("", async (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
     try {
-        const request = new TaskRegisterRequest(req.body.taskName, req.body.userId);
+        const request = new TaskRegisterRequest(req.body.taskName, req.body.childTaskNames, req.body.userId);
         const controller = container.get<TaskRegisterController>(TYPES.TaskRegisterController);
         const response = await controller.api(request);
         return res.json(response);
